@@ -1,13 +1,23 @@
 using Entity.Data;
 using Entity.Models;
+using Entity.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+// Creating the webapplication with the builder and the args
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+
+// Add services to the container. (Dependency Injection)
+builder.Services.AddScoped<RegisterService>();
+
+
+// Adding AutoMapper to the services
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 // Adding the dbcontext to the services with the connectionstring
 builder.Services.AddDbContext<UserDbContext>(opts =>
@@ -19,10 +29,6 @@ builder.Services
     .AddIdentity<User, IdentityRole>() // Adding the user and the role
     .AddEntityFrameworkStores<UserDbContext>() // Adding the userdbcontext
     .AddDefaultTokenProviders(); // Adding the default token providers
-
-
-// Adding AutoMapper to the services
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 // Adding the password settings to the services
@@ -37,7 +43,7 @@ builder.Services.Configure<IdentityOptions>(opts =>
     opts.Password.RequireLowercase = true; // Require a lowercase digit 
 });
 
-// 
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
