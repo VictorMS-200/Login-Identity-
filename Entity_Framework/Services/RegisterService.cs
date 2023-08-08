@@ -10,13 +10,21 @@ public class RegisterService
     // Creating Indepency Injection for the (mapper and usermanager) 
     private readonly IMapper _mapper;
     private readonly UserManager<User> _usermanager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly TokenService _tokenService;
 
 
     // Creating a constructor for the (mapper and usermanager)
-    public RegisterService(UserManager<User> usermanager, IMapper mapper)
+    public RegisterService(
+        UserManager<User> usermanager,
+        IMapper mapper,
+        SignInManager<User> signInManager,
+        TokenService tokenService)
     {
         _usermanager = usermanager;
         _mapper = mapper;
+        _signInManager = signInManager;
+        _tokenService = tokenService;
     }
 
 
@@ -34,5 +42,22 @@ public class RegisterService
         {
             throw new ApplicationException("User creation failed!");
         }
+    }
+
+    public async Task<string> LoginAsync(LoginUserDto dto)
+    {
+        // Singing in the user with SingInManager 
+        var result = await _signInManager.PasswordSignInAsync(dto.Username, dto.Password, false, false);
+
+        if (!result.Succeeded)
+        {
+            throw new ApplicationException("Login failed!");
+        }
+        
+        var user = _signInManager.UserManager.Users.SingleOrDefault(u => u.UserName == dto.Username);
+
+        var token = _tokenService.GenerateToken(user);
+        
+        return token;
     }
 }

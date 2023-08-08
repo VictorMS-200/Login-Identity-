@@ -13,6 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Add services to the container. (Dependency Injection)
 builder.Services.AddScoped<RegisterService>();
+builder.Services.AddScoped<TokenService>();
 
 
 // Adding AutoMapper to the services

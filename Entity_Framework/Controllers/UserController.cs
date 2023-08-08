@@ -1,8 +1,5 @@
-using AutoMapper;
 using Entity.Dto;
-using Entity.Models;
 using Entity.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -20,11 +17,18 @@ public class UserController : ControllerBase
     }
 
     // Method for creating a user
-    [HttpPost]
+    [HttpPost("register")]
     public async Task<IActionResult> CreateUser(CreateUserDto dto)
     {
         await _UserServices.Register(dto);
         return Ok("User created successfully!");
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> SingIn(LoginUserDto dto)
+    {
+        var token = await _UserServices.LoginAsync(dto);
+        return Ok(token);
     }
 
 }
