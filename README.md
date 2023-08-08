@@ -1,3 +1,8 @@
+# Web.APi with Entity Framework Core
+<img src="https://img.shields.io/badge/dotnet_version-7.0.305-green">
+<img src="https://img.shields.io/badge/Language-English-red">
+<img src="https://img.shields.io/badge/ASP.net-core-red">
+
 ## Description
 
 This repository is about the use of the framework Entity Framework Core to create a database and a web API. The database is about users and their addresses. The web API has the following endpoints: User (POST)
