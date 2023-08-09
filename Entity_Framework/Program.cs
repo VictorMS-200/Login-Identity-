@@ -1,3 +1,4 @@
+using Entity.Auth;
 using Entity.Data;
 using Entity.Models;
 using Entity.Services;
@@ -42,6 +43,16 @@ builder.Services.Configure<IdentityOptions>(opts =>
     opts.Password.RequireNonAlphanumeric = true; // Require a non alphanumeric character (e.g. '%')
     opts.Password.RequireUppercase = true; // Require a uppercase digit
     opts.Password.RequireLowercase = true; // Require a lowercase digit 
+});
+
+
+builder.Services.AddAuthorization(opts =>
+{
+    opts.AddPolicy("MinAge", policy =>
+    {
+        policy.AddRequirements(new MinAge(18));
+
+    });
 });
 
 
