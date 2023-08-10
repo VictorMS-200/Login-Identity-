@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entity_Framework.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20230808161113_Creating user")]
+    [Migration("20230810001719_Creating user")]
     partial class Creatinguser
     {
         /// <inheritdoc />
@@ -49,9 +49,6 @@ namespace Entity_Framework.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)

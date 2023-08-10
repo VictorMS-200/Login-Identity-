@@ -8,6 +8,13 @@ namespace Entity.Services;
 
 public class TokenService
 {
+    private readonly IConfiguration _configuration;
+
+    public TokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     public string GenerateToken(User user)
     {
         Claim[] claims = new Claim[]
@@ -18,7 +25,7 @@ public class TokenService
             new Claim("loginTimestamp", DateTime.UtcNow.ToString())
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperMegaHyperSecretKeyThatNobodyKnowsAboutIt@123456789"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SymmetricSecurityKey"]));
 
         var singingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

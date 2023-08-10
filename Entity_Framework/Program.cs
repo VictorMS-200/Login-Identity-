@@ -1,20 +1,41 @@
+using System.Text;
 using Entity.Auth;
 using Entity.Data;
 using Entity.Models;
 using Entity.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 // Creating the webapplication with the builder and the args
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration["ConnectionStrings:UsuarioConnection"];
 
+
+builder.Services.AddAuthentication(opts =>
+{
+    opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opts =>
+{
+    opts.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SymmetricSecurityKey"])),
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
 // Add services to the container. (Dependency Injection)
 builder.Services.AddScoped<RegisterService>();
 builder.Services.AddScoped<TokenService>();
+
+builder.Services.AddSingleton<IAuthorizationHandler, AgeAuth>();
 
 
 // Adding AutoMapper to the services
@@ -49,10 +70,8 @@ builder.Services.Configure<IdentityOptions>(opts =>
 builder.Services.AddAuthorization(opts =>
 {
     opts.AddPolicy("MinAge", policy =>
-    {
-        policy.AddRequirements(new MinAge(18));
-
-    });
+        policy.AddRequirements(new MinAge(18))
+    );
 });
 
 
@@ -72,6 +91,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

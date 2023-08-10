@@ -7,6 +7,7 @@ public class CreateUserDto
 {
     [Required]
     public string Username { get; set; }
+    [Required]
     public DateTime DateBirth { get; set; }
 
     [Required]

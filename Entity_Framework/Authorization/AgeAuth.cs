@@ -9,26 +9,27 @@ public class AgeAuth : AuthorizationHandler<MinAge>
     // This is the method that will be called when the policy is invoked
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, MinAge requirement)
     {
-        // Get the date of birth claim
-        var DateOfBirthClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.DateOfBirth);
+            var dataNascimentoClaim = context
+                .User.FindFirst(claim =>
+                claim.Type == ClaimTypes.DateOfBirth);
 
-        if (DateOfBirthClaim is null)
-        {
-            context.Fail();
+            if(dataNascimentoClaim is null)
+                return Task.CompletedTask;
+
+            var dataNascimento = Convert
+                .ToDateTime(dataNascimentoClaim.Value);
+
+            var idadeUsuario =
+                DateTime.Today.Year - dataNascimento.Year;
+
+            if (dataNascimento >
+                DateTime.Today.AddYears(-idadeUsuario))
+                idadeUsuario--;
+
+            if (idadeUsuario >= requirement.Age)
+                context.Succeed(requirement);
+
             return Task.CompletedTask;
-        }
-
-        // Convert the date of birth claim to a DateTime object
-        var DateOfBirth = Convert.ToDateTime(DateOfBirthClaim.Value);
-
-        var age = DateTime.Today.Year - DateOfBirth.Year;
-
-        if (DateOfBirth > DateTime.Today.AddYears(-age))
-        {
-            age--;
-        }
-
-        return Task.CompletedTask;
 
     }
 }

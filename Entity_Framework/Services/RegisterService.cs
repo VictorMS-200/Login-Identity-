@@ -54,7 +54,7 @@ public class RegisterService
             throw new ApplicationException("Login failed!");
         }
         
-        var user = _signInManager.UserManager.Users.SingleOrDefault(u => u.UserName == dto.Username);
+        var user = _signInManager.UserManager.Users.FirstOrDefault(u => u.NormalizedUserName == dto.Username.ToUpper());
 
         var token = _tokenService.GenerateToken(user);
         

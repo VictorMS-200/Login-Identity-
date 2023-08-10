@@ -9,7 +9,7 @@ namespace Entity.controller;
 public class AuthController : ControllerBase
 {
     [HttpGet]
-    [Authorize]
+    // [Authorize(Policy = "MinAge")]
     public IActionResult Get()
     {
         return Ok("Authenticated user is allowed to see this :)");
